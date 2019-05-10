@@ -10,7 +10,21 @@ void test() {
 }
 
 static int get_next_tid() {
+    if (++tid == T_NUM) {
+        tid = 0;
+    }
+    for (int i = 0; i < T_NUM; ++i) {
+        if (threads[tid].is_active == 1) break;        
+        if (++tid >= T_NUM) tid = 0;
+    }
+    return tid;
+}
+
+static int get_next_tid2() {
+    printf("tid!!! = %d\n", tid);
+    printf("thnum!!! = %d\n", thnum);
     if (++tid == thnum) {
+
         tid = 0;
     }
     for (int i = 0; i < thnum; ++i) {
@@ -66,7 +80,10 @@ void end_thread() {
 //        exit(1);
         thfin();
     }
-    current = &threads[get_next_tid()];
+//    printf("currenttid = %d\n", tid);
+    int nextth = get_next_tid();    
+//    printf("nexttid = %d\n", nextth);
+    current = &threads[nextth];
     thresume();
 }
 
@@ -79,14 +96,18 @@ void create_thread(tfunc f, int idx) {
     memset(threads[0].ctx, 0, sizeof(uint64_t) * 18);
     threads[idx].stack = malloc(0x8000);
     memset(threads[idx].stack, 0, 0x8000);
-    sp = threads[idx].stack + 0x8000 - 0x100;
+    sp = threads[idx].stack + 0x8000 - 0x1000;
     ((uint64_t*)sp)[0] = (uint64_t)threads[idx].f;
     ((uint64_t*)sp)[1] = (uint64_t)end_thread;
     threads[idx].ctx[0] = (uint64_t)sp;
     
 }
 
-void create_mainthread(tfunc mainf) {    
+void create_mainthread(tfunc mainf) {
+    for (int i = 0; i < T_NUM; ++i) {
+        threads[i].is_active = 0;
+    }
+    
     create_thread(mainf, 0);
     current = &threads[0];
 }

@@ -22,12 +22,22 @@ void secondt() {
     }
     printf("total count in second = %d\n", count);
 //    thwait();
+}
 
+void thirdt() {
+    printf("Third Thread\n");
+    int count = 0;
+    for (int i = 0; i < 3; ++i, ++count) {
+        printf("third  [%d]\n", i);
+        thwait();
+    }
+    printf("total count in third  = %d\n", count);
 }
 
 void mainthread() {
     printf("Main Thread Run\n");
 
+    create_thread(thirdt,  2);
     create_thread(secondt, 1);
     thwait();
     /*
@@ -43,7 +53,7 @@ void mainthread() {
         printf("main   [%d]\n", i);
         thwait();
     }
-    printf("total count in second = %d\n", count);
+    printf("total count in main = %d\n", count);
     printf("Main Thread Rung\n");     
     //    exit(1);
 

@@ -2,6 +2,8 @@
 #define _QTHREAD_H_
 #include <stdint.h>
 
+#define T_NUM 3
+
 typedef void (*tfunc)();
 
 typedef struct _q_thread {
@@ -12,7 +14,7 @@ typedef struct _q_thread {
     uint8_t is_active;
 } q_thread;
 
-q_thread threads[2];
+q_thread threads[T_NUM];
 
 void create_thread(tfunc f, int idx);
 void create_mainthread(tfunc mainf);
