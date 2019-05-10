@@ -9,6 +9,7 @@ typedef struct _q_thread {
     char* stack;
     tfunc f;
     uint32_t tid;        
+    uint8_t is_active;
 } q_thread;
 
 q_thread threads[2];
@@ -16,7 +17,14 @@ q_thread threads[2];
 void create_thread(tfunc f, int idx);
 void create_mainthread(tfunc mainf);
 
+
+void thrun();
+void thwait();
+void thresume();
+void thfin();
+
 q_thread *current;
 int tid;
+int thnum;
 
 #endif

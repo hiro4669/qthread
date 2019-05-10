@@ -1,14 +1,69 @@
 extern _current
 extern _dispatch
 
-GLOBAL _thrun,_thwait
+GLOBAL _thrun,_thwait,_thresume,_thfin
 
 SECTION .text
 _thrun:
     mov rax, _current
     mov rax, [rax]
     mov rsp, [rax]
+;    mov rbx, [rax + 64] ; flagqをrbxに代入
+;    push rbx            ; スタックに積む
+;    mov rbx, [rax + 56] ; raxをrbxに代入
+;    push rbx            ; スタックに積む
+;    add rsp, 16         ; spを戻す
+;    mov rbp, [rax +   8]
+;    mov rdi, [rax +  16]
+;    mov rsi, [rax +  24]
+;    mov rdx, [rax +  32]
+;    mov rcx, [rax +  40]
+;    mov rbx, [rax +  48]
+;    mov r8,  [rax +  72]
+;    mov r9,  [rax +  80]
+;    mov r10, [rax +  88]
+;    mov r11, [rax +  96]
+;    mov r12, [rax + 104]
+;    mov r13, [rax + 112]
+;    mov r14, [rax + 120]
+;    mov r15, [rax + 128]
+;    mov rax, [rsp - 16] ; raxを復元
+;    sub rsp, 8          ; flagqを復元
+;    popfq
     ret
+
+_thresume:
+    mov rax, _current
+    mov rax, [rax]
+    mov rsp, [rax]
+    mov rbx, [rax + 64] ; flagqをrbxに代入
+    push rbx            ; スタックに積む
+    mov rbx, [rax + 56] ; raxをrbxに代入
+    push rbx            ; スタックに積む
+    add rsp, 16         ; spを戻す
+    mov rbp, [rax +   8]
+    mov rdi, [rax +  16]
+    mov rsi, [rax +  24]
+    mov rdx, [rax +  32]
+    mov rcx, [rax +  40]
+    mov rbx, [rax +  48]
+    mov r8,  [rax +  72]
+    mov r9,  [rax +  80]
+    mov r10, [rax +  88]
+    mov r11, [rax +  96]
+    mov r12, [rax + 104]
+    mov r13, [rax + 112]
+    mov r14, [rax + 120]
+    mov r15, [rax + 128]
+    mov rax, [rsp - 16] ; raxを復元
+    sub rsp, 8          ; flagqを復元
+    popfq
+    ret
+
+_thfin:
+    mov rax, 0x2000001      ; Set system call to exit=1.
+    mov rdi, 0              ; Set success value of exit.
+    syscall                 ; Call system call.
 
 ; old context switch
 _thwait_old:
